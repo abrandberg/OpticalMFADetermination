@@ -1,4 +1,4 @@
-function Intensity = fitFunctionYeColor(x, AtoTry,wavelengthToTry)
+function Intensity = fitFunctionYeColor(x, AtoTry,wavelengthToTry,PtoTry)
 
 mfa = x(1);
 % Unpacking
@@ -6,12 +6,17 @@ mfa = x(1);
 AtoTry = rad2deg(AtoTry);
 % Analyzer position is given in radians inside COMSOL.
 
-P = 45;
+PtoTry = rad2deg(PtoTry);
+
 % Hard-coded polarizer position for Chun Ye et al. method.
 
 for aLoop = 1:length(AtoTry)
     A = AtoTry(aLoop);
     % Set current analyzer position
+    
+    P = PtoTry(aLoop);
+    % Set current polarizer position
+    
     
     Delta = (x(2)*0.05*1e-6*2*pi/wavelengthToTry(aLoop));
     % Equation (12)
