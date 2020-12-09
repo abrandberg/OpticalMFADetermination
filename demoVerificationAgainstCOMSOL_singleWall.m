@@ -25,7 +25,7 @@ ctrl.interpreter = 'latex';
 ctrl.markerChain = {'<','>','^','o','s','d'};
 lineInstructions = {'markersize',8};
 
-ctrl.opticalModel = 'fiber'; 
+ctrl.opticalModel = 'singleWall'; 
 % Choice of system:
 % 'fiber'       -> Polarizer - Fiber wall - Fiber wall - Analyzer 
 %                 (uses fitFunctionYeColor.m)
@@ -34,23 +34,9 @@ ctrl.opticalModel = 'fiber';
 
 %% Precomputed response from COMSOL model. Uncomment one.
 resultDir = 'precomputedData';
-% resultToImport = 'precomputed_MFA=8_WALL=3_YE.mat';
-% resultToImport = 'precomputed_MFA=14_WALL=3_YE.mat';
-% resultToImport = 'precomputed_MFA=14_WALL=1_YE.mat';
-
-% resultToImport = 'precomputed_MFA=17_WALL=4.mat';
-% resultToImport = 'precomputed_MFA=17_WALL=4_Pmoving.mat';
-
-% The final part of these file names refers to the fraction of incoming light that is
-% polarized, e.g. "0.4Pol" == 40% of incoming light is polarized.
-% resultToImport = 'precomputed_MFA=17_WALL=4_Pmoving_0.1Pol.mat';
-% resultToImport = 'precomputed_MFA=17_WALL=4_Pmoving_0.2Pol.mat';
-% resultToImport = 'precomputed_MFA=17_WALL=4_Pmoving_0.4Pol.mat';
-% resultToImport = 'precomputed_MFA=17_WALL=4_Pmoving_0.6Pol.mat';
-resultToImport = 'precomputed_MFA=17_WALL=4_Amoving_0.4Pol.mat';
-% resultToImport = 'precomputed_MFA=-12_WALL=2_Amoving_SingleWall.mat';
-% resultToImport = 'precomputed_MFA=-12_WALL=2_Amoving_SingleWall.mat';
-% resultToImport = 'precomputed_MFA=-12_WALL=2_Pmoving_0.4Pol_SingleWall.mat';
+resultToImport = 'precomputed_MFA=-12_WALL=2_Amoving_SingleWall.mat';
+% resultToImport = 'precomputed_MFA=-12_WALL=2_Pmoving_SingleWall.mat';             
+% resultToImport = 'precomputed_MFA=-12_WALL=2_Pmoving_0.4Pol_SingleWall.mat';        % 40% polarized light
 load([resultDir filesep resultToImport])
 
 
@@ -66,6 +52,12 @@ else
     IntensitySweep(:,6) = [];
 end
 
+% Deselect all but three wavelengths
+% BLUE = 450 nm
+% RED = 650 nm
+% GREEN = 500 nm
+lambdaSel = ismembertol(IntensitySweep(:,5),[450 500 650].*1e-9,10e-9);
+IntensitySweep = IntensitySweep(lambdaSel,:);
 
 
 %% Demo of Chun Ye et al. method. See function "chunYe" for input/output documentation

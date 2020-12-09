@@ -1,4 +1,4 @@
-function [x, fitFcn, costFcn] = globalSearchRoutineMFA_TF(IntensitySweep, I0, x0)
+function [x, fitFcn, costFcn] = globalSearchRoutineMFA_TF(IntensitySweep, I0, x0, ctrl)
 %function globalSearchRoutineMFA_TF minimizes the error between observed and expected output intensity,
 %with the goal of finding the MFA and the wall thickness of the fiber.
 %
@@ -55,7 +55,15 @@ function [x, fitFcn, costFcn] = globalSearchRoutineMFA_TF(IntensitySweep, I0, x0
 % Created by: August Brandberg augustbr at kth dot se
 % Date: 2020-12-09
 
-fitFcn  = @(x, polarizerPosition, analyzerPosition, wavelength, I0) fitFunctionYeColor(x, polarizerPosition, analyzerPosition, wavelength,I0);
+if strcmp(ctrl.opticalModel, 'fiber')
+    fitFcn  = @(x, polarizerPosition, analyzerPosition, wavelength, I0) fitFunctionYeColor(x, polarizerPosition, analyzerPosition, wavelength,I0);
+elseif strcmp(ctrl.opticalModel, 'singleWall')
+    fitFcn  = @(x, polarizerPosition, analyzerPosition, wavelength, I0) fitFunctionYeColorSingleWall(x, polarizerPosition, analyzerPosition, wavelength,I0);
+else
+    disp('Model to fit undefined. Set ctrl.opticalModel according to instructions.')
+    error('Model underfined')
+end
+
 costFcn = @(x) sqrt(1/size(IntensitySweep,1)*sum((fitFcn(x,IntensitySweep(:,3),IntensitySweep(:,4),IntensitySweep(:,5),I0) -  IntensitySweep(:,6)).^2));
 
 
