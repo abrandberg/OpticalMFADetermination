@@ -27,3 +27,28 @@ The data is mainly supplied via the matrix **IntensitySweep** which contains one
 
     Column 7: Intensity
     These are the intensities recorded during the experiment.
+
+## Description of the functions
+Broadly speaking there are three classes of functions in this repository:
+
+1. **Derivations**
+These files are typically stand-alone scripts that use MATLABs symbolic engine to derive analytical expressions for sought quantities.
+
+2. **Demo files**
+These files function as demonstrations. They generally work as a self-contained script calling input, processing functions and plotting/output functions.
+
+3. **Functions**
+These are the files that do the calculations. They can/should be called from other workflows as necessary.
+
+
+## Function descriptions
+
+**Derivations**
+
+*symbolicDerivationOfStationaryAnalyzer.m*
+
+Derives intensity as a function of polarizer, analyzer, mfa and wall thickness under assumption that the polarizer is moving.
+
+*symbolicDerivationOfStationaryPolarizer.m*
+
+Derives intensity as a function of polarizer, analyzer, mfa and wall thickness under assumption that the analyzer is moving.
