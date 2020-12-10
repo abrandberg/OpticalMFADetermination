@@ -34,9 +34,14 @@ ctrl.opticalModel = 'singleWall';
 
 %% Precomputed response from COMSOL model. Uncomment one.
 resultDir = 'precomputedData';
-resultToImport = 'precomputed_MFA=-12_WALL=2_Amoving_SingleWall.mat';
+% resultToImport = 'precomputed_MFA=-12_WALL=2_Amoving_SingleWall.mat';
 % resultToImport = 'precomputed_MFA=-12_WALL=2_Pmoving_SingleWall.mat';             
 % resultToImport = 'precomputed_MFA=-12_WALL=2_Pmoving_0.4Pol_SingleWall.mat';        % 40% polarized light
+
+resultToImport = 'precomputed_MFA=-12_WALL=2_Pmoving_0.4Pol_SingleWall_REF=YES.mat'
+
+
+
 load([resultDir filesep resultToImport])
 
 
@@ -50,7 +55,19 @@ else
     fprintf('%s\n','Columns of IntensitySweep:');
     fprintf('%20s %10s %10s %10s %10s %10s %10s %10s\n','',legendIntensitySweep{:});
     IntensitySweep(:,6) = [];
+    
+    if size(IntensitySweep,2) == 7
+        fprintf('%s\n','Dual system with reference intensity detected. Splitting matrix.')
+        Iref = IntensitySweep(:,7);
+        IntensitySweep(:,7) = [];
+        
+        I0 = compensateIntensityVariation(IntensitySweep(:,3), IntensitySweep(:,4), Iref);
+        I0 = 1000*0.5*ones(size(IntensitySweep,1),1); % COMMENT ME TO CHECK NEW CODE
+    end
 end
+
+
+
 
 % Deselect all but three wavelengths
 % BLUE = 450 nm
@@ -58,6 +75,8 @@ end
 % GREEN = 500 nm
 lambdaSel = ismembertol(IntensitySweep(:,5),[450 500 650].*1e-9,10e-9);
 IntensitySweep = IntensitySweep(lambdaSel,:);
+I0 = I0(lambdaSel);
+
 
 
 %% Demo of Chun Ye et al. method. See function "chunYe" for input/output documentation
@@ -78,7 +97,7 @@ else
 end
 
 %% Use the equations from Chun Ye but use all the data to fit.
-I0 = 1000*0.5;
+
 x0 = [4 2]; 
 % Starting guess (MFA = 4 deg, tf = 2 um)
 [x, fitFcn, costFcn] = globalSearchRoutineMFA_TF(IntensitySweep,I0, x0, ctrl);
