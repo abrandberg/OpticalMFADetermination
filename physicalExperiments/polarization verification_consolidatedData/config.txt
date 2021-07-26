@@ -1,0 +1,15 @@
+Collimator:   no
+LED:          fixed
+Red:          70
+Green:        70
+Blue:         50
+lens:         fixed
+Positive:     counter-clockwise
+Analyzer:     +45
+Polarizer:    rotating
+Step:         +5
+Range:        0:+360
+Waveplate_1:  1/4
+Waveplate_2:  1/4
+
+
